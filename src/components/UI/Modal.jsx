@@ -5,7 +5,7 @@ export default function Modal({
   children,
   open,
   className = "",
-  onclose: onClose,
+  onClose,
   ...props
 }) {
   const dialogRef = useRef();
@@ -16,22 +16,17 @@ export default function Modal({
     if (open) {
       modal.showModal();
 
-      const handleOutsideClick = (e) => {
-        if (e.target === modal) {
-          modal.close();
-          onClose?.();
-        }
-      };
-
-      modal.addEventListener("click", handleOutsideClick);
-      return () => modal.removeEventListener("click", handleOutsideClick);
-    } else {
-      modal.close();
+      return () => modal.close();
     }
   }, [open]);
 
   return createPortal(
-    <dialog ref={dialogRef} className={`modal ${className}`} {...props}>
+    <dialog
+      ref={dialogRef}
+      className={`modal ${className}`}
+      onClose={onClose}
+      {...props}
+    >
       {children}
     </dialog>,
     document.getElementById("modal")

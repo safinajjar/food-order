@@ -15,7 +15,9 @@ export default function Cart() {
   }, 0);
 
   const handleCloseCart = () => {
-    userProgressCtx.hideCart();
+    if (userProgressCtx.progress === "cart") {
+      userProgressCtx.hideCart();
+    }
   };
 
   const handleCheckout = () => {
@@ -47,7 +49,7 @@ export default function Cart() {
           Close
         </Button>
         {cartCtx.items.length > 0 && (
-          <Button onClick={handleCloseCart}>Checkout</Button>
+          <Button onClick={handleCheckout}>Checkout</Button>
         )}
       </p>
     </Modal>
