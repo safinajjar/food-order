@@ -1,30 +1,28 @@
-import { useEffect, useState } from "react";
 import { BASE_URL } from "../main";
 import MealItem from "./MealItem";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Meals() {
-  const [meals, setMeals] = useState([]);
+  const {
+    isLoading,
+    error,
+    data: meals,
+  } = useQuery({
+    queryKey: ["meals"],
+    queryFn: () => fetch(`${BASE_URL}/meals`).then((res) => res.json()),
+  });
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const response = await fetch(`${BASE_URL}/meals`);
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch meals.");
-        }
-
-        const data = await response.json();
-        setMeals(data);
-      } catch (error) {
-        console.error(error);
-      }
-    })();
-  }, []);
+  if (error) {
+    return <p>Error: {error.message}</p>;
+  }
 
   return (
     <ul id="meals">
-      {meals.map((meal) => (
+      {meals?.map((meal) => (
         <MealItem key={meal.id} meal={meal} />
       ))}
     </ul>
